@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2018-03-24 10:56:41 by Netedit Version 0.32.0
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <output>
+        <output-file value="D:\KTH\Kexjobb\traffic-control-system-comparison\intersection.net.xml"/>
+    </output>
+
+    <processing>
+        <no-turnarounds value="true"/>
+        <offset.disable-normalization value="true"/>
+    </processing>
+
+</configuration>
+-->
+
+<net version="0.27" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
+
+    <location netOffset="0.00,0.00" convBoundary="-100.00,-100.00,100.00,100.00" origBoundary="10000000000.00,10000000000.00,-10000000000.00,-10000000000.00" projParameter="!"/>
+
+    <edge id=":intersection_0" function="internal">
+        <lane id=":intersection_0_0" index="0" speed="13.89" length="5.00" shape="-4.95,8.05 -5.14,6.69 -5.72,5.73 -6.69,5.14 -8.05,4.95"/>
+    </edge>
+    <edge id=":intersection_1" function="internal">
+        <lane id=":intersection_1_0" index="0" speed="13.89" length="16.10" shape="-4.95,8.05 -4.95,-8.05"/>
+    </edge>
+    <edge id=":intersection_2" function="internal">
+        <lane id=":intersection_2_0" index="0" speed="13.89" length="10.82" shape="-1.65,8.05 -1.04,3.81 0.77,0.77 3.35,-0.77"/>
+    </edge>
+    <edge id=":intersection_12" function="internal">
+        <lane id=":intersection_12_0" index="0" speed="13.89" length="4.82" shape="3.35,-0.77 3.81,-1.04 8.05,-1.65"/>
+    </edge>
+    <edge id=":intersection_3" function="internal">
+        <lane id=":intersection_3_0" index="0" speed="13.89" length="5.00" shape="8.05,4.95 6.69,5.14 5.73,5.72 5.14,6.69 4.95,8.05"/>
+    </edge>
+    <edge id=":intersection_4" function="internal">
+        <lane id=":intersection_4_0" index="0" speed="13.89" length="16.10" shape="8.05,4.95 -8.05,4.95"/>
+    </edge>
+    <edge id=":intersection_5" function="internal">
+        <lane id=":intersection_5_0" index="0" speed="13.89" length="10.82" shape="8.05,1.65 3.81,1.04 0.77,-0.77 -0.77,-3.35"/>
+    </edge>
+    <edge id=":intersection_13" function="internal">
+        <lane id=":intersection_13_0" index="0" speed="13.89" length="4.82" shape="-0.77,-3.35 -1.04,-3.81 -1.65,-8.05"/>
+    </edge>
+    <edge id=":intersection_6" function="internal">
+        <lane id=":intersection_6_0" index="0" speed="13.89" length="5.00" shape="4.95,-8.05 5.14,-6.69 5.72,-5.73 6.69,-5.14 8.05,-4.95"/>
+    </edge>
+    <edge id=":intersection_7" function="internal">
+        <lane id=":intersection_7_0" index="0" speed="13.89" length="16.10" shape="4.95,-8.05 4.95,8.05"/>
+    </edge>
+    <edge id=":intersection_8" function="internal">
+        <lane id=":intersection_8_0" index="0" speed="13.89" length="10.82" shape="1.65,-8.05 1.04,-3.81 -0.77,-0.77 -3.35,0.77"/>
+    </edge>
+    <edge id=":intersection_14" function="internal">
+        <lane id=":intersection_14_0" index="0" speed="13.89" length="4.82" shape="-3.35,0.77 -3.81,1.04 -8.05,1.65"/>
+    </edge>
+    <edge id=":intersection_9" function="internal">
+        <lane id=":intersection_9_0" index="0" speed="13.89" length="5.00" shape="-8.05,-4.95 -6.69,-5.14 -5.73,-5.72 -5.14,-6.69 -4.95,-8.05"/>
+    </edge>
+    <edge id=":intersection_10" function="internal">
+        <lane id=":intersection_10_0" index="0" speed="13.89" length="16.10" shape="-8.05,-4.95 8.05,-4.95"/>
+    </edge>
+    <edge id=":intersection_11" function="internal">
+        <lane id=":intersection_11_0" index="0" speed="13.89" length="10.82" shape="-8.05,-1.65 -3.81,-1.04 -0.77,0.77 0.77,3.35"/>
+    </edge>
+    <edge id=":intersection_15" function="internal">
+        <lane id=":intersection_15_0" index="0" speed="13.89" length="4.82" shape="0.77,3.35 1.04,3.81 1.65,8.05"/>
+    </edge>
+
+    <edge id="east_left" from="east" to="intersection" priority="1">
+        <lane id="east_left_0" index="0" speed="13.89" length="91.95" shape="100.00,4.95 8.05,4.95"/>
+        <lane id="east_left_1" index="1" speed="13.89" length="91.95" shape="100.00,1.65 8.05,1.65"/>
+    </edge>
+    <edge id="east_right" from="intersection" to="east" priority="1">
+        <lane id="east_right_0" index="0" speed="13.89" length="91.95" shape="8.05,-4.95 100.00,-4.95"/>
+        <lane id="east_right_1" index="1" speed="13.89" length="91.95" shape="8.05,-1.65 100.00,-1.65"/>
+    </edge>
+    <edge id="north_down" from="north" to="intersection" priority="1">
+        <lane id="north_down_0" index="0" speed="13.89" length="91.95" shape="-4.95,100.00 -4.95,8.05"/>
+        <lane id="north_down_1" index="1" speed="13.89" length="91.95" shape="-1.65,100.00 -1.65,8.05"/>
+    </edge>
+    <edge id="north_up" from="intersection" to="north" priority="1">
+        <lane id="north_up_0" index="0" speed="13.89" length="91.95" shape="4.95,8.05 4.95,100.00"/>
+        <lane id="north_up_1" index="1" speed="13.89" length="91.95" shape="1.65,8.05 1.65,100.00"/>
+    </edge>
+    <edge id="south_down" from="intersection" to="south" priority="1">
+        <lane id="south_down_0" index="0" speed="13.89" length="91.95" shape="-4.95,-8.05 -4.95,-100.00"/>
+        <lane id="south_down_1" index="1" speed="13.89" length="91.95" shape="-1.65,-8.05 -1.65,-100.00"/>
+    </edge>
+    <edge id="south_up" from="south" to="intersection" priority="1">
+        <lane id="south_up_0" index="0" speed="13.89" length="91.95" shape="4.95,-100.00 4.95,-8.05"/>
+        <lane id="south_up_1" index="1" speed="13.89" length="91.95" shape="1.65,-100.00 1.65,-8.05"/>
+    </edge>
+    <edge id="west_left" from="intersection" to="west" priority="1">
+        <lane id="west_left_0" index="0" speed="13.89" length="91.95" shape="-8.05,4.95 -100.00,4.95"/>
+        <lane id="west_left_1" index="1" speed="13.89" length="91.95" shape="-8.05,1.65 -100.00,1.65"/>
+    </edge>
+    <edge id="west_right" from="west" to="intersection" priority="1">
+        <lane id="west_right_0" index="0" speed="13.89" length="91.95" shape="-100.00,-4.95 -8.05,-4.95"/>
+        <lane id="west_right_1" index="1" speed="13.89" length="91.95" shape="-100.00,-1.65 -8.05,-1.65"/>
+    </edge>
+
+    <tlLogic id="intersection" type="static" programID="0" offset="0">
+        <phase duration="33" state="GGgrrrGGgrrr"/>
+        <phase duration="3" state="yygrrryygrrr"/>
+        <phase duration="6" state="rrGrrrrrGrrr"/>
+        <phase duration="3" state="rryrrrrryrrr"/>
+        <phase duration="33" state="rrrGGgrrrGGg"/>
+        <phase duration="3" state="rrryygrrryyg"/>
+        <phase duration="6" state="rrrrrGrrrrrG"/>
+        <phase duration="3" state="rrrrryrrrrry"/>
+    </tlLogic>
+
+    <junction id="east" type="dead_end" x="100.00" y="0.00" incLanes="east_right_0 east_right_1" intLanes="" shape="100.00,0.05 100.00,-6.55 100.00,-0.05"/>
+    <junction id="intersection" type="traffic_light" x="0.00" y="0.00" incLanes="north_down_0 north_down_1 east_left_0 east_left_1 south_up_0 south_up_1 west_right_0 west_right_1" intLanes=":intersection_0_0 :intersection_1_0 :intersection_12_0 :intersection_3_0 :intersection_4_0 :intersection_13_0 :intersection_6_0 :intersection_7_0 :intersection_14_0 :intersection_9_0 :intersection_10_0 :intersection_15_0" shape="-6.55,8.05 6.55,8.05 8.05,6.55 8.05,-6.55 6.55,-8.05 -6.55,-8.05 -8.05,-6.55 -8.05,6.55">
+        <request index="0" response="000000000000" foes="000100010000" cont="0"/>
+        <request index="1" response="000000000000" foes="111100110000" cont="0"/>
+        <request index="2" response="000011000000" foes="110011110000" cont="1"/>
+        <request index="3" response="000010000000" foes="100010000000" cont="0"/>
+        <request index="4" response="000110000111" foes="100110000111" cont="0"/>
+        <request index="5" response="011110000110" foes="011110000110" cont="1"/>
+        <request index="6" response="000000000000" foes="010000000100" cont="0"/>
+        <request index="7" response="000000000000" foes="110000111100" cont="0"/>
+        <request index="8" response="000000000011" foes="110000110011" cont="1"/>
+        <request index="9" response="000000000010" foes="000000100010" cont="0"/>
+        <request index="10" response="000111000110" foes="000111100110" cont="0"/>
+        <request index="11" response="000110011110" foes="000110011110" cont="1"/>
+    </junction>
+    <junction id="north" type="dead_end" x="0.00" y="100.00" incLanes="north_up_0 north_up_1" intLanes="" shape="-0.05,100.00 6.55,100.00 0.05,100.00"/>
+    <junction id="south" type="dead_end" x="0.00" y="-100.00" incLanes="south_down_0 south_down_1" intLanes="" shape="0.05,-100.00 -6.55,-100.00 -0.05,-100.00"/>
+    <junction id="west" type="dead_end" x="-100.00" y="0.00" incLanes="west_left_0 west_left_1" intLanes="" shape="-100.00,-0.05 -100.00,6.55 -100.00,0.05"/>
+
+    <junction id=":intersection_12_0" type="internal" x="3.35" y="-0.77" incLanes=":intersection_2_0 south_up_0" intLanes=":intersection_4_0 :intersection_5_0 :intersection_6_0 :intersection_7_0 :intersection_10_0 :intersection_11_0"/>
+    <junction id=":intersection_13_0" type="internal" x="-0.77" y="-3.35" incLanes=":intersection_5_0 west_right_0" intLanes=":intersection_1_0 :intersection_2_0 :intersection_7_0 :intersection_8_0 :intersection_9_0 :intersection_10_0"/>
+    <junction id=":intersection_14_0" type="internal" x="-3.35" y="0.77" incLanes=":intersection_8_0 north_down_0" intLanes=":intersection_0_0 :intersection_1_0 :intersection_4_0 :intersection_5_0 :intersection_10_0 :intersection_11_0"/>
+    <junction id=":intersection_15_0" type="internal" x="0.77" y="3.35" incLanes=":intersection_11_0 east_left_0" intLanes=":intersection_1_0 :intersection_2_0 :intersection_3_0 :intersection_4_0 :intersection_7_0 :intersection_8_0"/>
+
+    <connection from="east_left" to="north_up" fromLane="0" toLane="0" via=":intersection_3_0" tl="intersection" linkIndex="3" dir="r" state="o"/>
+    <connection from="east_left" to="west_left" fromLane="0" toLane="0" via=":intersection_4_0" tl="intersection" linkIndex="4" dir="s" state="o"/>
+    <connection from="east_left" to="south_down" fromLane="1" toLane="1" via=":intersection_5_0" tl="intersection" linkIndex="5" dir="l" state="o"/>
+    <connection from="north_down" to="west_left" fromLane="0" toLane="0" via=":intersection_0_0" tl="intersection" linkIndex="0" dir="r" state="o"/>
+    <connection from="north_down" to="south_down" fromLane="0" toLane="0" via=":intersection_1_0" tl="intersection" linkIndex="1" dir="s" state="o"/>
+    <connection from="north_down" to="east_right" fromLane="1" toLane="1" via=":intersection_2_0" tl="intersection" linkIndex="2" dir="l" state="o"/>
+    <connection from="south_up" to="east_right" fromLane="0" toLane="0" via=":intersection_6_0" tl="intersection" linkIndex="6" dir="r" state="o"/>
+    <connection from="south_up" to="north_up" fromLane="0" toLane="0" via=":intersection_7_0" tl="intersection" linkIndex="7" dir="s" state="o"/>
+    <connection from="south_up" to="west_left" fromLane="1" toLane="1" via=":intersection_8_0" tl="intersection" linkIndex="8" dir="l" state="o"/>
+    <connection from="west_right" to="south_down" fromLane="0" toLane="0" via=":intersection_9_0" tl="intersection" linkIndex="9" dir="r" state="o"/>
+    <connection from="west_right" to="east_right" fromLane="0" toLane="0" via=":intersection_10_0" tl="intersection" linkIndex="10" dir="s" state="o"/>
+    <connection from="west_right" to="north_up" fromLane="1" toLane="1" via=":intersection_11_0" tl="intersection" linkIndex="11" dir="l" state="o"/>
+
+    <connection from=":intersection_0" to="west_left" fromLane="0" toLane="0" dir="r" state="M"/>
+    <connection from=":intersection_1" to="south_down" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":intersection_2" to="east_right" fromLane="0" toLane="1" via=":intersection_12_0" dir="l" state="m"/>
+    <connection from=":intersection_12" to="east_right" fromLane="0" toLane="1" dir="l" state="M"/>
+    <connection from=":intersection_3" to="north_up" fromLane="0" toLane="0" dir="r" state="M"/>
+    <connection from=":intersection_4" to="west_left" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":intersection_5" to="south_down" fromLane="0" toLane="1" via=":intersection_13_0" dir="l" state="m"/>
+    <connection from=":intersection_13" to="south_down" fromLane="0" toLane="1" dir="l" state="M"/>
+    <connection from=":intersection_6" to="east_right" fromLane="0" toLane="0" dir="r" state="M"/>
+    <connection from=":intersection_7" to="north_up" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":intersection_8" to="west_left" fromLane="0" toLane="1" via=":intersection_14_0" dir="l" state="m"/>
+    <connection from=":intersection_14" to="west_left" fromLane="0" toLane="1" dir="l" state="M"/>
+    <connection from=":intersection_9" to="south_down" fromLane="0" toLane="0" dir="r" state="M"/>
+    <connection from=":intersection_10" to="east_right" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":intersection_11" to="north_up" fromLane="0" toLane="1" via=":intersection_15_0" dir="l" state="m"/>
+    <connection from=":intersection_15" to="north_up" fromLane="0" toLane="1" dir="l" state="M"/>
+
+</net>
