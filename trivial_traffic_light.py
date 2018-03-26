@@ -20,12 +20,10 @@ def run_algorithm():
     yellow = 0
     west_east = True
     yellow_phase = False
-    steps = 0
     listener = traffic_analyzer.WaitingTimeListener()
     traci.addStepListener(listener)
     while traci.simulation.getMinExpectedNumber() > 0:
         traci.simulationStep()
-        steps += 1
 
         #Increment time for the different phases
         if yellow_phase:
