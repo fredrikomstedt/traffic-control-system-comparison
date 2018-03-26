@@ -15,20 +15,13 @@ NS_YELLOW_STATE = "YYyrrrYYyrrr"
 WE_GREEN_STATE = "rrrGGgrrrGGg"
 WE_YELLOW_STATE = "rrrYYyrrrYYy"
 
-class WaitingTimeListener(traci.StepListener):
-    def step(self, t=0):
-        traffic_analyzer.addWaitingTimes("west_left")
-        traffic_analyzer.addWaitingTimes("north_up")
-        traffic_analyzer.addWaitingTimes("east_right")
-        traffic_analyzer.addWaitingTimes("south_down")
-
 def run_algorithm():
     green = 0
     yellow = 0
     west_east = True
     yellow_phase = False
     steps = 0
-    listener = WaitingTimeListener()
+    listener = traffic_analyzer.WaitingTimeListener()
     traci.addStepListener(listener)
     while traci.simulation.getMinExpectedNumber() > 0:
         traci.simulationStep()

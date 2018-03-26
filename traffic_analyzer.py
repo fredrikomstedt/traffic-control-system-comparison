@@ -6,6 +6,13 @@ else:
     sys.exit("Please declare environment variable 'SUMO_HOME'")
 import traci
 
+class WaitingTimeListener(traci.StepListener):
+    def step(self, t=0):
+        addWaitingTimes("west_left")
+        addWaitingTimes("north_up")
+        addWaitingTimes("east_right")
+        addWaitingTimes("south_down")
+
 vehicles_checked = {}
 
 def addWaitingTimes(edge):
