@@ -36,76 +36,77 @@ def run_algorithm():
     yellow = False
     yellow_timer = 0
 
-    green_timer = 0
+    green_timer = GREEN_TIME
     green_time = GREEN_TIME
-    second_green_time = 0
 
-    west_east = True
-
-    calculated_values = False
-    switched = False
+    max_density = 0
+    max_density_edge = "west"
 
     while traci.simulation.getMinExpectedNumber() > 0:
         traci.simulationStep()
 
-        if calculated_values:
-            if yellow:
+        #Switching between roads
+        if yellow:
+            if yellow_timer < YELLOW_TIME:
                 yellow_timer += 1
-                if yellow_timer > YELLOW_TIME:
-                    yellow_timer = 0
-                    yellow = False
-
-                    #Switch lights
-                    if west_east and not switched:
-                        #During this iteration, WE has already been green
-                        traci.trafficlight.setRedYellowGreenState("intersection", NS_GREEN_STATE)
-                        green_time = min(second_green_time, GREEN_TIME)
-                        west_east = False
-                        switched = True
-                    elif not switched:
-                        #During this iteration, NS has already been green
-                        traci.trafficlight.setRedYellowGreenState("intersection", WE_GREEN_STATE)
-                        green_time = min(second_green_time, GREEN_TIME)
-                        west_east = True
-                        switched = True
-                    else:
-                        switched = False
-                        calculated_values = False
             else:
-                if green_timer < green_time:
-                    green_timer += 1
+                yellow_timer = 0
+                yellow = False
+                if max_density_edge == "west" or max_density_edge == "east":
+                    traci.trafficlight.setRedYellowGreenState("intersection", WE_GREEN_STATE)
                 else:
-                    green_timer = 0
-                    yellow = True
-                    if west_east:
-                        traci.trafficlight.setRedYellowGreenState("intersection", WE_YELLOW_STATE)
-                    else:
-                        traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
+                    traci.trafficlight.setRedYellowGreenState("intersection", NS_GREEN_STATE)
+        #Light is green
+        elif green_timer < green_time:
+            green_timer += 1
+        #Determine which road that should get green light
         else:
-            density["west"], time["west"] = traffic_analyzer.getDensityAndTimeOnEdge("west_right")
-            density["north"], time["north"] = traffic_analyzer.getDensityAndTimeOnEdge("north_down")
-            density["east"], time["east"] = traffic_analyzer.getDensityAndTimeOnEdge("east_left")
-            density["south"], time["south"] = traffic_analyzer.getDensityAndTimeOnEdge("south_up")
-            calculated_values = True
+            green_timer = 0
 
-            #Determine order of lights
+            #Set current green road's values to 0
+            if max_density_edge == "west" or max_density_edge == "east":
+                density["west"] = 0
+                density["east"] = 0
+                time["west"] = 0
+                time["east"] = 0
+            else:
+                density["north"] = 0
+                density["south"] = 0
+                time["north"] = 0
+                time["south"] = 0
+
+            previous_edge = max_density_edge
             max_density = 0
-            max_density_edge = "west"
+
+            #Get highest density
             for edge in density:
                 if density[edge] > max_density:
                     max_density = density[edge]
                     max_density_edge = edge
-            if edge is "west" or edge is "east":
-                west_east = True
+
+            #All roads have been taken, recalculate values
+            if max_density == 0:
+                density["west"], time["west"] = traffic_analyzer.getDensityAndTimeOnEdge("west_right")
+                density["north"], time["north"] = traffic_analyzer.getDensityAndTimeOnEdge("north_down")
+                density["east"], time["east"] = traffic_analyzer.getDensityAndTimeOnEdge("east_left")
+                density["south"], time["south"] = traffic_analyzer.getDensityAndTimeOnEdge("south_up")
+
+                #Get highest density, again
+                for edge in density:
+                    if density[edge] > max_density:
+                        max_density = density[edge]
+                        max_density_edge = edge
+
+            if max_density_edge == "west" or max_density_edge == "east":
                 green_time = min(max(time["west"], time["east"]), GREEN_TIME)
-                second_green_time = max(time["north"], time["south"])
-                traci.trafficlight.setRedYellowGreenState("intersection", WE_GREEN_STATE)
+                if previous_edge != "west" and previous_edge != "east":
+                    yellow = True
+                    traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
             else:
-                west_east = False
                 green_time = min(max(time["north"], time["south"]), GREEN_TIME)
-                second_green_time = max(time["west"], time["east"])
-                traci.trafficlight.setRedYellowGreenState("intersection", NS_GREEN_STATE)
-            calculated_values = True
+                if previous_edge != "north" and previous_edge != "south":
+                    yellow = True
+                    traci.trafficlight.setRedYellowGreenState("intersection", WE_YELLOW_STATE)
 
 
     print("Average waiting time: " + str(traffic_analyzer.getAverageWaitingTime()))
