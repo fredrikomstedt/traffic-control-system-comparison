@@ -17,6 +17,14 @@ class WaitingTimeListener(traci.StepListener):
 
 vehicles_checked = {}
 
+density = {}
+class DensityListener(traci.StepListener):
+    def step(self, t=0):
+        density["west"] = getNumberOfVehiclesOnEdge("west_right")
+        density["north"] = getNumberOfVehiclesOnEdge("north_down")
+        density["east"] = getNumberOfVehiclesOnEdge("east_left")
+        density["south"] = getNumberOfVehiclesOnEdge("south_up")
+
 def addWaitingTimes(edge):
     #Get the vehicles from the last step on the lane
     vehicles = traci.edge.getLastStepVehicleIDs(edge)
