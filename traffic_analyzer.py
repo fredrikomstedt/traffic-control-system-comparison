@@ -40,6 +40,9 @@ def addWaitingTimes(edge):
         if not vehicle in vehicles_checked:
             vehicles_checked[vehicle] = traci.vehicle.getAccumulatedWaitingTime(vehicle)
 
+def getVehicleAmount():
+    return len(vehicles_checked)
+
 def getAverageWaitingTimes():
     return getAverageWaitingTime(vehicles_checked)
 
@@ -66,6 +69,25 @@ def getAverageSquaredWaitingTime(vehicles):
     if vehicle_amount == 0:
         return 0
     return float(time_sum)/vehicle_amount
+
+def getWaitingTimes():
+    return getWaitingTime(vehicles_checked)
+
+def getWaitingTime(vehicles):
+    time_sum = 0
+    for vehicle in vehicles:
+        time_sum += vehicles[vehicle]
+    return float(time_sum)
+
+def getSquaredWaitingTimes():
+    return getSquaredWaitingTime(vehicles_checked)
+
+def getSquaredWaitingTime(vehicles):
+    time_sum = 0
+    for vehicle in vehicles:
+        time = vehicles[vehicle]
+        time_sum += time**2
+    return float(time_sum)
 
 def getNumberOfVehiclesOnEdge(edge):
     vehicles = traci.edge.getLastStepVehicleIDs(edge)

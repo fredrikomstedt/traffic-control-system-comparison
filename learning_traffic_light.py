@@ -9,13 +9,6 @@ import traci
 import traffic_analyzer
 
 #Reinforcement learning
-from traffic_task import TrafficTask
-from traffic_environment import TrafficEnvironment
-from pybrain.rl.learners.valuebased import ActionValueTable
-from pybrain.rl.agents import LearningAgent
-from pybrain.rl.learners import Q
-from pybrain.rl.experiments.continuous import Experiment
-from pybrain.rl.explorers import EpsilonGreedyExplorer
 import numpy as np
 
 
@@ -26,6 +19,58 @@ NS_YELLOW_STATE = "YYyrrrYYyrrr"
 WE_GREEN_STATE = "rrrGGgrrrGGg"
 WE_YELLOW_STATE = "rrrYYyrrrYYy"
 
+def sensorValues(d_ns, d_we, p_t, w_e):
+    delay_ns = 0
+    delay_we = 0
+    phase_time = 0
+    we = 0
+    #Discretisize the continuous values
+    #NS
+    if d_ns < 200:
+        delay_ns = 0
+    elif d_ns < 400:
+        delay_ns = 1
+    elif d_ns < 600:
+        delay_ns = 2
+    elif d_ns < 800:
+        delay_ns = 3
+    else:
+        delay_ns = 4
+
+    #WE
+    if d_we < 200:
+        delay_we = 0
+    elif d_we < 400:
+        delay_we = 1
+    elif d_we < 600:
+        delay_we = 2
+    elif d_we < 800:
+        delay_we = 3
+    else:
+        delay_we = 4
+
+    #Time
+    if p_t < 10:
+        phase_time = 0
+    elif p_t < 20:
+        phase_time = 1
+    elif p_t < 30:
+        phase_time = 2
+    elif p_t < 40:
+        phase_time = 3
+    elif p_t < 50:
+        phase_time = 4
+    elif p_t < 60:
+        phase_time = 5
+    else:
+        phase_time = 6
+
+    if w_e:
+        we = 1
+    else:
+        we = 0
+    return delay_ns, delay_we, phase_time, we
+
 def run_algorithm():
     wait_listener = traffic_analyzer.WaitingTimeListener()
     traci.addStepListener(wait_listener)
@@ -33,16 +78,10 @@ def run_algorithm():
     traci.addStepListener(delayListener)
 
     #Reinforcement Learning
-    action_value_table = ActionValueTable(350, 2)
-    action_value_table.initialize(0.)
-    learner = Q()
-    agent = LearningAgent(action_value_table, learner)
-
-    environment = TrafficEnvironment()
-    task = TrafficTask(environment)
-    experiment = Experiment(task, agent)
-
-    prev_reward = -traffic_analyzer.getAverageSquaredWaitingTimes()
+    Q = np.zeros([5, 5, 7, 2, 2])
+    # Set learning parameters
+    lr = .8
+    y = .95
     #
 
     switched = False
@@ -56,8 +95,15 @@ def run_algorithm():
     west_east = True
     traci.trafficlight.setRedYellowGreenState("intersection", WE_GREEN_STATE)
 
+    state = [0, 0, 0, 1]
+    previous_state = state
+    action = 0
+    previous_waiting_times = 0
+
+    step = 0
     while traci.simulation.getMinExpectedNumber() > 0:
         traci.simulationStep()
+        step += 1
 
         if yellow:
             if yellow_time < YELLOW_TIME:
@@ -80,18 +126,30 @@ def run_algorithm():
                 else:
                     if green_time % 10 == 0:
                         #Reinforcement learning
-                        reward = -traffic_analyzer.getAverageSquaredWaitingTimes()
-                        task.setReward(reward - prev_reward)
-                        prev_reward = reward
-                        environment.setSensorValues(traffic_analyzer.delay["north_south"], traffic_analyzer.delay["west_east"], green_time, west_east)
-                        experiment.doInteractions(1)
-                        agent.learn()
-                        agent.reset()
-                        if environment.set_west_east != west_east:
-                            switched = True
 
-                    else:
-                        green_time += 1
+                        #Get state
+                        d_ns, d_we, p_t, w_e = sensorValues(traffic_analyzer.delay["north_south"], traffic_analyzer.delay["west_east"], green_time, west_east)
+                        state = [d_ns, d_we, p_t, w_e]
+
+                        #Get reward
+                        waiting_times = traffic_analyzer.getSquaredWaitingTimes()
+                        if waiting_times < previous_waiting_times:
+                            waiting_times = previous_waiting_times
+                        r = waiting_times - previous_waiting_times
+                        previous_waiting_times = waiting_times
+
+                        #Update Q-Table with new knowledge
+                        Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action] = Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action] + lr*(r + y*np.min(Q[state[0], state[1], state[2], state[3],:]) - Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action])
+
+                        #Get action and execute it
+                        action = np.argmin(Q[state[0], state[1], state[2], state[3],:] + np.random.randn(1,2)*(1./(step+1)))
+                        if action == 1 and not west_east:
+                            switched = True
+                        elif action == 0 and west_east:
+                            switched = True
+                        previous_state = state
+
+                    green_time += 1
             elif switched:
                 green_time = 0
                 switched = False
@@ -102,15 +160,15 @@ def run_algorithm():
                     traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
 
 
-
     print("Average waiting time: " + str(traffic_analyzer.getAverageWaitingTimes()))
     print("Average squared waiting time: " + str(traffic_analyzer.getAverageSquaredWaitingTimes()))
+    print(Q)
     traci.close()
     sys.stdout.flush()
 
 if __name__ == '__main__':
     #Get the binary for SUMO
-    sumoBinary = checkBinary('sumo-gui')
+    sumoBinary = checkBinary('sumo')
 
     #Connect to SUMO via TraCI
     traci.start([sumoBinary, "-c", "intersection.sumocfg", "--waiting-time-memory", "1000"])
