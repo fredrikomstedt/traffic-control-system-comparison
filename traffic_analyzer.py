@@ -17,13 +17,21 @@ class WaitingTimeListener(traci.StepListener):
 
 vehicles_checked = {}
 
-density = {}
-class DensityListener(traci.StepListener):
+delay = {}
+class DelayListener(traci.StepListener):
     def step(self, t=0):
-        density["west"] = getNumberOfVehiclesOnEdge("west_right")
-        density["north"] = getNumberOfVehiclesOnEdge("north_down")
-        density["east"] = getNumberOfVehiclesOnEdge("east_left")
-        density["south"] = getNumberOfVehiclesOnEdge("south_up")
+        vehicles_ns = traci.edge.getLastStepVehicleIDs("north_down")
+        vehicles_ns += traci.edge.getLastStepVehicleIDs("south_up")
+        vehicles_we = traci.edge.getLastStepVehicleIDs("west_right")
+        vehicles_we += traci.edge.getLastStepVehicleIDs("east_left")
+        vehicles_ns_dict = {}
+        for vehicle in vehicles_ns:
+            vehicles_ns_dict[vehicle] = traci.vehicle.getAccumulatedWaitingTime(vehicle)
+        vehicles_we_dict = {}
+        for vehicle in vehicles_we:
+            vehicles_we_dict[vehicle] = traci.vehicle.getAccumulatedWaitingTime(vehicle)
+        delay["west_east"] = getAverageSquaredWaitingTime(vehicles_we_dict)
+        delay["north_south"] = getAverageSquaredWaitingTime(vehicles_ns_dict)
 
 def addWaitingTimes(edge):
     #Get the vehicles from the last step on the lane
@@ -32,21 +40,31 @@ def addWaitingTimes(edge):
         if not vehicle in vehicles_checked:
             vehicles_checked[vehicle] = traci.vehicle.getAccumulatedWaitingTime(vehicle)
 
-def getAverageWaitingTime():
+def getAverageWaitingTimes():
+    return getAverageWaitingTime(vehicles_checked)
+
+def getAverageWaitingTime(vehicles):
     time_sum = 0
     vehicle_amount = 0
-    for vehicle in vehicles_checked:
+    for vehicle in vehicles:
         vehicle_amount += 1
-        time_sum += vehicles_checked[vehicle]
+        time_sum += vehicles[vehicle]
+    if vehicle_amount == 0:
+        return 0
     return float(time_sum)/vehicle_amount
 
-def getAverageSquaredWaitingTime():
+def getAverageSquaredWaitingTimes():
+    return getAverageSquaredWaitingTime(vehicles_checked)
+
+def getAverageSquaredWaitingTime(vehicles):
     time_sum = 0
     vehicle_amount = 0
-    for vehicle in vehicles_checked:
+    for vehicle in vehicles:
         vehicle_amount += 1
-        time = vehicles_checked[vehicle]
+        time = vehicles[vehicle]
         time_sum += time**2
+    if vehicle_amount == 0:
+        return 0
     return float(time_sum)/vehicle_amount
 
 def getNumberOfVehiclesOnEdge(edge):

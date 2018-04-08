@@ -49,8 +49,8 @@ def run_algorithm():
                 else:
                     traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
 
-    print("Average waiting time: " + str(traffic_analyzer.getAverageWaitingTime()))
-    print("Average squared waiting time: " + str(traffic_analyzer.getAverageSquaredWaitingTime()))
+    print("Average waiting time: " + str(traffic_analyzer.getAverageWaitingTimes()))
+    print("Average squared waiting time: " + str(traffic_analyzer.getAverageSquaredWaitingTimes()))
     traci.close()
     sys.stdout.flush()
 
