@@ -162,7 +162,6 @@ def run_algorithm():
 
     print("Average waiting time: " + str(traffic_analyzer.getAverageWaitingTimes()))
     print("Average squared waiting time: " + str(traffic_analyzer.getAverageSquaredWaitingTimes()))
-    print(Q)
     traci.close()
     sys.stdout.flush()
 
