@@ -101,9 +101,18 @@ def run_algorithm():
     previous_waiting_times = 0
 
     step = 0
+
+    waiting_time = 0
+    waiting_time2 = 0
+    vehicle_amount = 0
     while traci.simulation.getMinExpectedNumber() > 0:
         traci.simulationStep()
         step += 1
+
+        if step == 10800:
+            waiting_time = traffic_analyzer.getWaitingTimes()
+            waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
+            vehicle_amount = traffic_analyzer.getVehicleAmount()
 
         if yellow:
             if yellow_time < YELLOW_TIME:
@@ -160,8 +169,11 @@ def run_algorithm():
                     traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
 
 
-    print("Average waiting time: " + str(traffic_analyzer.getAverageWaitingTimes()))
-    print("Average squared waiting time: " + str(traffic_analyzer.getAverageSquaredWaitingTimes()))
+    waiting_time = traffic_analyzer.getWaitingTimes() - waiting_time
+    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes() - waiting_time2
+    vehicle_amount = traffic_analyzer.getVehicleAmount() - vehicle_amount
+    print("Average waiting time: " + str(float(waiting_time) / vehicle_amount))
+    print("Average squared waiting time: " + str(float(waiting_time2) / vehicle_amount))
     traci.close()
     sys.stdout.flush()
 

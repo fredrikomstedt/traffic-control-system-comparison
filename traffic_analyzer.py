@@ -30,8 +30,8 @@ class DelayListener(traci.StepListener):
         vehicles_we_dict = {}
         for vehicle in vehicles_we:
             vehicles_we_dict[vehicle] = traci.vehicle.getAccumulatedWaitingTime(vehicle)
-        delay["west_east"] = getAverageSquaredWaitingTime(vehicles_we_dict)
-        delay["north_south"] = getAverageSquaredWaitingTime(vehicles_ns_dict)
+        delay["west_east"] = getSquaredWaitingTime(vehicles_we_dict)
+        delay["north_south"] = getSquaredWaitingTime(vehicles_ns_dict)
 
 def addWaitingTimes(edge):
     #Get the vehicles from the last step on the lane

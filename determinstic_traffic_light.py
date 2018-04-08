@@ -42,8 +42,19 @@ def run_algorithm():
     max_density = 0
     max_density_edge = "west"
 
+    step = 0
+
+    waiting_time = 0
+    waiting_time2 = 0
+    vehicle_amount = 0
     while traci.simulation.getMinExpectedNumber() > 0:
         traci.simulationStep()
+        step += 1
+
+        if step == 10800:
+            waiting_time = traffic_analyzer.getWaitingTimes()
+            waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
+            vehicle_amount = traffic_analyzer.getVehicleAmount()
 
         #Switching between roads
         if yellow:
@@ -109,14 +120,17 @@ def run_algorithm():
                     traci.trafficlight.setRedYellowGreenState("intersection", WE_YELLOW_STATE)
 
 
-    print("Average waiting time: " + str(traffic_analyzer.getAverageWaitingTimes()))
-    print("Average squared waiting time: " + str(traffic_analyzer.getAverageSquaredWaitingTimes()))
+    waiting_time = traffic_analyzer.getWaitingTimes() - waiting_time
+    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes() - waiting_time2
+    vehicle_amount = traffic_analyzer.getVehicleAmount() - vehicle_amount
+    print("Average waiting time: " + str(float(waiting_time) / vehicle_amount))
+    print("Average squared waiting time: " + str(float(waiting_time2) / vehicle_amount))
     traci.close()
     sys.stdout.flush()
 
 if __name__ == '__main__':
     #Get the binary for SUMO
-    sumoBinary = checkBinary('sumo-gui')
+    sumoBinary = checkBinary('sumo')
 
     #Connect to SUMO via TraCI
     traci.start([sumoBinary, "-c", "intersection.sumocfg", "--waiting-time-memory", "1000"])
