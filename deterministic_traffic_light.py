@@ -127,12 +127,17 @@ def run_algorithm():
     print("Average squared waiting time: " + str(float(waiting_time2) / vehicle_amount))
     traci.close()
     sys.stdout.flush()
+    traffic_analyzer.reset()
+    return float(waiting_time) / vehicle_amount, float(waiting_time2) / vehicle_amount
 
-if __name__ == '__main__':
+def run():
     #Get the binary for SUMO
     sumoBinary = checkBinary('sumo')
 
     #Connect to SUMO via TraCI
     traci.start([sumoBinary, "-c", "intersection.sumocfg", "--waiting-time-memory", "1000"])
 
-    run_algorithm()
+    return run_algorithm()
+
+if __name__ == '__main__':
+    run()

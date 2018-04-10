@@ -5,7 +5,7 @@
 # Written by Fredrik Omstedt and Erik Björck.
 
 import random
-random.seed(1337) #Make tests reproducible
+#random.seed(1337) #Make tests reproducible
 
 def generate_vehicle(road):
 	vehType = random.randint(0, 3)
@@ -17,11 +17,11 @@ def generate_vehicle(road):
 		vehColorRed = 1
 	return vehType, vehRoute, vehColorRed, vehColorGreen, vehColorBlue
 
-def generate_routefile():
+def generate_routefile(d):
 	N = 14400 #Number of time steps
 
 	#Demand per second from any direction
-	demand = 1./10
+	demand = d
 
 	#Generate the route file
 	with open("intersection.rou.xml", "w") as routes:
@@ -82,4 +82,4 @@ def generate_routefile():
 
 
 if __name__ == "__main__":
-	generate_routefile()
+	generate_routefile(1./10)

@@ -33,6 +33,12 @@ class DelayListener(traci.StepListener):
         delay["west_east"] = getSquaredWaitingTime(vehicles_we_dict)
         delay["north_south"] = getSquaredWaitingTime(vehicles_ns_dict)
 
+def reset():
+    global vehicles_checked
+    vehicles_checked = {}
+    global delay
+    delay = {}
+
 def addWaitingTimes(edge):
     #Get the vehicles from the last step on the lane
     vehicles = traci.edge.getLastStepVehicleIDs(edge)

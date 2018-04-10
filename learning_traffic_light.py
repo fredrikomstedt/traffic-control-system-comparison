@@ -7,6 +7,7 @@ else:
 from sumolib import checkBinary
 import traci
 import traffic_analyzer
+import random
 
 #Reinforcement learning
 import numpy as np
@@ -151,7 +152,14 @@ def run_algorithm():
                         Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action] = Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action] + lr*(r + y*np.min(Q[state[0], state[1], state[2], state[3],:]) - Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action])
 
                         #Get action and execute it
-                        action = np.argmin(Q[state[0], state[1], state[2], state[3],:] + np.random.randn(1,2)*(1./(step+1)))
+                        explore = 0.1 + (14400 - step)/14400
+                        if explore > 1:
+                            explore = 1
+                        action = None
+                        if random.uniform(0, 1) > explore:
+                            action = np.argmin(Q[state[0], state[1], state[2], state[3],:])
+                        else:
+                            action = random.randint(0, 1)
                         if action == 1 and not west_east:
                             switched = True
                         elif action == 0 and west_east:
@@ -176,12 +184,17 @@ def run_algorithm():
     print("Average squared waiting time: " + str(float(waiting_time2) / vehicle_amount))
     traci.close()
     sys.stdout.flush()
+    traffic_analyzer.reset()
+    return float(waiting_time) / vehicle_amount, float(waiting_time2) / vehicle_amount
 
-if __name__ == '__main__':
+def run():
     #Get the binary for SUMO
     sumoBinary = checkBinary('sumo')
 
     #Connect to SUMO via TraCI
     traci.start([sumoBinary, "-c", "intersection.sumocfg", "--waiting-time-memory", "1000"])
 
-    run_algorithm()
+    return run_algorithm()
+
+if __name__ == '__main__':
+    run()

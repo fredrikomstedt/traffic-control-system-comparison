@@ -15,7 +15,8 @@ NS_YELLOW_STATE = "YYyrrrYYyrrr"
 WE_GREEN_STATE = "rrrGGgrrrGGg"
 WE_YELLOW_STATE = "rrrYYyrrrYYy"
 
-def run_algorithm():
+def run_algorithm(gt):
+    GREEN_TIME = gt
     green = 0
     yellow = 0
     west_east = True
@@ -69,12 +70,17 @@ def run_algorithm():
     print("Average squared waiting time: " + str(float(waiting_time2) / vehicle_amount))
     traci.close()
     sys.stdout.flush()
+    traffic_analyzer.reset()
+    return float(waiting_time) / vehicle_amount, float(waiting_time2) / vehicle_amount
 
-if __name__ == '__main__':
+def run(gt):
     #Get the binary for SUMO
     sumoBinary = checkBinary('sumo')
 
     #Connect to SUMO via TraCI
     traci.start([sumoBinary, "-c", "intersection.sumocfg", "--waiting-time-memory", "1000"])
 
-    run_algorithm()
+    return run_algorithm(gt)
+
+if __name__ == '__main__':
+    run(30)
