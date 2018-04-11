@@ -38,10 +38,7 @@ def run_tests(d, t, g):
         wait, wait_squared = learning.run(False)
 
     with open('results.txt', 'a') as results_file:
-        if t != 4:
-            results_file.write(str((t, demand, wait, wait_squared)) + '\n')
-        else:
-            results_file.write(str((t, demand, wait, wait_squared, i)) + '\n')
+        results_file.write(str((t, demand, wait, wait_squared)) + '\n')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Used to run tests for various traffic light algorithms.')

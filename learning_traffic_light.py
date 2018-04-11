@@ -115,6 +115,11 @@ def run_algorithm(not_trained):
         traci.simulationStep()
         step += 1
 
+        if step == 600:
+            waiting_time = traffic_analyzer.getWaitingTimes()
+            waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
+            vehicle_amount = traffic_analyzer.getVehicleAmount()
+
         if yellow:
             if yellow_time < YELLOW_TIME:
                 yellow_time += 1
@@ -179,9 +184,9 @@ def run_algorithm(not_trained):
                     traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
 
 
-    waiting_time = traffic_analyzer.getWaitingTimes()
-    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
-    vehicle_amount = traffic_analyzer.getVehicleAmount()
+    waiting_time = traffic_analyzer.getWaitingTimes() - waiting_time
+    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes() - waiting_time2
+    vehicle_amount = traffic_analyzer.getVehicleAmount() - vehicle_amount
     np.save('q.npy', Q)
     print("Q matrix stored")
     print("Average waiting time: " + str(float(waiting_time) / vehicle_amount))

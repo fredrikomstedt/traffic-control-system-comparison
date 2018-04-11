@@ -51,6 +51,11 @@ def run_algorithm():
         traci.simulationStep()
         step += 1
 
+        if step == 600:
+            waiting_time = traffic_analyzer.getWaitingTimes()
+            waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
+            vehicle_amount = traffic_analyzer.getVehicleAmount()
+
         #Switching between roads
         if yellow:
             if yellow_timer < YELLOW_TIME:
@@ -115,9 +120,9 @@ def run_algorithm():
                     traci.trafficlight.setRedYellowGreenState("intersection", WE_YELLOW_STATE)
 
 
-    waiting_time = traffic_analyzer.getWaitingTimes()
-    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
-    vehicle_amount = traffic_analyzer.getVehicleAmount()
+    waiting_time = traffic_analyzer.getWaitingTimes() - waiting_time
+    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes() - waiting_time2
+    vehicle_amount = traffic_analyzer.getVehicleAmount() - vehicle_amount
     print("Average waiting time: " + str(float(waiting_time) / vehicle_amount))
     print("Average squared waiting time: " + str(float(waiting_time2) / vehicle_amount))
     traci.close()
