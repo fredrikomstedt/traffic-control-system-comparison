@@ -27,25 +27,25 @@ def sensorValues(d_ns, d_we, p_t, w_e):
     we = 0
     #Discretisize the continuous values
     #NS
-    if d_ns < 200:
+    if d_ns < 2000:
         delay_ns = 0
-    elif d_ns < 400:
+    elif d_ns < 4000:
         delay_ns = 1
-    elif d_ns < 600:
+    elif d_ns < 6000:
         delay_ns = 2
-    elif d_ns < 800:
+    elif d_ns < 8000:
         delay_ns = 3
     else:
         delay_ns = 4
 
     #WE
-    if d_we < 200:
+    if d_we < 2000:
         delay_we = 0
-    elif d_we < 400:
+    elif d_we < 4000:
         delay_we = 1
-    elif d_we < 600:
+    elif d_we < 6000:
         delay_we = 2
-    elif d_we < 800:
+    elif d_we < 8000:
         delay_we = 3
     else:
         delay_we = 4
