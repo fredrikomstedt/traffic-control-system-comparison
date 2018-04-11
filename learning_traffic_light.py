@@ -80,6 +80,11 @@ def run_algorithm():
 
     #Reinforcement Learning
     Q = np.zeros([5, 5, 7, 2, 2])
+    try:
+        Q = np.load('q.npy')
+        print("Q matrix loaded")
+    except:
+        pass
     # Set learning parameters
     lr = .8
     y = .95
@@ -180,6 +185,8 @@ def run_algorithm():
     waiting_time = traffic_analyzer.getWaitingTimes() - waiting_time
     waiting_time2 = traffic_analyzer.getSquaredWaitingTimes() - waiting_time2
     vehicle_amount = traffic_analyzer.getVehicleAmount() - vehicle_amount
+    np.save('q.npy', Q)
+    print("Q matrix stored")
     print("Average waiting time: " + str(float(waiting_time) / vehicle_amount))
     print("Average squared waiting time: " + str(float(waiting_time2) / vehicle_amount))
     traci.close()
