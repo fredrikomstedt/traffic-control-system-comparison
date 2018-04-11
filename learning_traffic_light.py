@@ -72,7 +72,7 @@ def sensorValues(d_ns, d_we, p_t, w_e):
         we = 0
     return delay_ns, delay_we, phase_time, we
 
-def run_algorithm():
+def run_algorithm(not_trained):
     wait_listener = traffic_analyzer.WaitingTimeListener()
     traci.addStepListener(wait_listener)
     delayListener = traffic_analyzer.DelayListener()
@@ -115,11 +115,6 @@ def run_algorithm():
         traci.simulationStep()
         step += 1
 
-        if step == 10800:
-            waiting_time = traffic_analyzer.getWaitingTimes()
-            waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
-            vehicle_amount = traffic_analyzer.getVehicleAmount()
-
         if yellow:
             if yellow_time < YELLOW_TIME:
                 yellow_time += 1
@@ -157,7 +152,9 @@ def run_algorithm():
                         Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action] = Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action] + lr*(r + y*np.min(Q[state[0], state[1], state[2], state[3],:]) - Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action])
 
                         #Get action and execute it
-                        explore = 0.1 + (14400 - step)/14400
+                        explore = 0.1
+                        if not_trained:
+                            explore += (14400 - step)/14400
                         if explore > 1:
                             explore = 1
                         action = None
@@ -182,9 +179,9 @@ def run_algorithm():
                     traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
 
 
-    waiting_time = traffic_analyzer.getWaitingTimes() - waiting_time
-    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes() - waiting_time2
-    vehicle_amount = traffic_analyzer.getVehicleAmount() - vehicle_amount
+    waiting_time = traffic_analyzer.getWaitingTimes()
+    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
+    vehicle_amount = traffic_analyzer.getVehicleAmount()
     np.save('q.npy', Q)
     print("Q matrix stored")
     print("Average waiting time: " + str(float(waiting_time) / vehicle_amount))
@@ -194,14 +191,14 @@ def run_algorithm():
     traffic_analyzer.reset()
     return float(waiting_time) / vehicle_amount, float(waiting_time2) / vehicle_amount
 
-def run():
+def run(not_trained):
     #Get the binary for SUMO
     sumoBinary = checkBinary('sumo')
 
     #Connect to SUMO via TraCI
     traci.start([sumoBinary, "-c", "intersection.sumocfg", "--waiting-time-memory", "1000"])
 
-    return run_algorithm()
+    return run_algorithm(not_trained)
 
 if __name__ == '__main__':
-    run()
+    run(True)

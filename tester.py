@@ -6,7 +6,7 @@ import argparse
 
 LEARNING_RUNS = 5
 
-def run_tests(d, t, g, i):
+def run_tests(d, t, g):
     demand = (d+1)*1./20
     wait = 0
     wait_squared = 0
@@ -34,8 +34,8 @@ def run_tests(d, t, g, i):
         wait, wait_squared = deterministic.run()
     elif t == 4:
         #Learning
-        print("Demand: " + str(demand*100) + "%/s, learning " + str(i))
-        wait, wait_squared = learning.run()
+        print("Demand: " + str(demand*100) + "%/s, learning")
+        wait, wait_squared = learning.run(False)
 
     with open('results.txt', 'a') as results_file:
         if t != 4:
@@ -48,13 +48,11 @@ if __name__ == '__main__':
     parser.add_argument('demand', help='The demand of traffic, either 0, 1, 2 or 3.')
     parser.add_argument('type', help='The type of algorithm to be used, either 0, 1, 2, 3 or 4.')
     parser.add_argument('--generate_file', help="If used, new routefile will be generated.", action='store_true')
-    parser.add_argument('--learning_iteration', help='The iteration for learning if learning occurs.', default=-1)
 
     #Extract parsed arguments
     args = parser.parse_args()
     d = int(args.demand)
     t = int(args.type)
     g = args.generate_file
-    i = int(args.learning_iteration)
 
-    run_tests(d, t, g, i)
+    run_tests(d, t, g)

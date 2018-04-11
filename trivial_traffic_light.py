@@ -33,11 +33,6 @@ def run_algorithm(gt):
         traci.simulationStep()
         step += 1
 
-        if step == 10800:
-            waiting_time = traffic_analyzer.getWaitingTimes()
-            waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
-            vehicle_amount = traffic_analyzer.getVehicleAmount()
-
         #Increment time for the different phases
         if yellow_phase:
             yellow += 1
@@ -63,9 +58,9 @@ def run_algorithm(gt):
                     traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
 
 
-    waiting_time = traffic_analyzer.getWaitingTimes() - waiting_time
-    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes() - waiting_time2
-    vehicle_amount = traffic_analyzer.getVehicleAmount() - vehicle_amount
+    waiting_time = traffic_analyzer.getWaitingTimes()
+    waiting_time2 = traffic_analyzer.getSquaredWaitingTimes()
+    vehicle_amount = traffic_analyzer.getVehicleAmount()
     print("Average waiting time: " + str(float(waiting_time) / vehicle_amount))
     print("Average squared waiting time: " + str(float(waiting_time2) / vehicle_amount))
     traci.close()

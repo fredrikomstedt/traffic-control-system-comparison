@@ -18,7 +18,7 @@ def generate_vehicle(road):
 	return vehType, vehRoute, vehColorRed, vehColorGreen, vehColorBlue
 
 def generate_routefile(d):
-	N = 14400 #Number of time steps
+	N = 3600 #Number of time steps
 
 	#Demand per second from any direction
 	demand = d
