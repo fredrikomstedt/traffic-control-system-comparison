@@ -20,35 +20,68 @@ NS_YELLOW_STATE = "YYyrrrYYyrrr"
 WE_GREEN_STATE = "rrrGGgrrrGGg"
 WE_YELLOW_STATE = "rrrYYyrrrYYy"
 
-def sensorValues(d_ns, d_we, p_t, w_e):
-    delay_ns = 0
-    delay_we = 0
+def sensorValues(q_w, q_n, q_e, q_s, p_t):
+    queue_w = 0
+    queue_n = 0
+    queue_e = 0
+    queue_s = 0
     phase_time = 0
-    we = 0
     #Discretisize the continuous values
-    #NS
-    if d_ns < 2000:
-        delay_ns = 0
-    elif d_ns < 4000:
-        delay_ns = 1
-    elif d_ns < 6000:
-        delay_ns = 2
-    elif d_ns < 8000:
-        delay_ns = 3
+    #N
+    if q_n < 4:
+        queue_n = 0
+    elif q_n < 8:
+        queue_n = 1
+    elif q_n < 12:
+        queue_n = 2
+    elif q_n < 16:
+        queue_n = 3
+    elif q_n < 20:
+        queue_n = 4
     else:
-        delay_ns = 4
+        queue_n = 5
 
-    #WE
-    if d_we < 2000:
-        delay_we = 0
-    elif d_we < 4000:
-        delay_we = 1
-    elif d_we < 6000:
-        delay_we = 2
-    elif d_we < 8000:
-        delay_we = 3
+    #E
+    if q_e < 4:
+        queue_e = 0
+    elif q_e < 8:
+        queue_e = 1
+    elif q_e < 12:
+        queue_e = 2
+    elif q_e < 16:
+        queue_e = 3
+    elif q_e < 20:
+        queue_e = 4
     else:
-        delay_we = 4
+        queue_e = 5
+
+    #S
+    if q_s < 4:
+        queue_s = 0
+    elif q_s < 8:
+        queue_s = 1
+    elif q_s < 12:
+        queue_s = 2
+    elif q_s < 16:
+        queue_s = 3
+    elif q_s < 20:
+        queue_s = 4
+    else:
+        queue_s = 5
+
+    #W
+    if q_w < 4:
+        queue_w = 0
+    elif q_w < 8:
+        queue_w = 1
+    elif q_w < 12:
+        queue_w = 2
+    elif q_w < 16:
+        queue_w = 3
+    elif q_w < 20:
+        queue_w = 4
+    else:
+        queue_w = 5
 
     #Time
     if p_t < 10:
@@ -66,20 +99,18 @@ def sensorValues(d_ns, d_we, p_t, w_e):
     else:
         phase_time = 6
 
-    if w_e:
-        we = 1
-    else:
-        we = 0
-    return delay_ns, delay_we, phase_time, we
+    return queue_w, queue_n, queue_e, queue_s, phase_time
 
 def run_algorithm(not_trained):
     wait_listener = traffic_analyzer.WaitingTimeListener()
     traci.addStepListener(wait_listener)
     delayListener = traffic_analyzer.DelayListener()
     traci.addStepListener(delayListener)
+    queueListener = traffic_analyzer.QueueListener()
+    traci.addStepListener(queueListener)
 
     #Reinforcement Learning
-    Q = np.zeros([5, 5, 7, 2, 2])
+    Q = np.zeros([6, 6, 6, 6, 7, 2])
     try:
         Q = np.load('q.npy')
         print("Q matrix loaded")
@@ -101,7 +132,7 @@ def run_algorithm(not_trained):
     west_east = True
     traci.trafficlight.setRedYellowGreenState("intersection", WE_GREEN_STATE)
 
-    state = [0, 0, 0, 1]
+    state = [0, 0, 0, 0, 0]
     previous_state = state
     action = 0
     previous_waiting_times = 0
@@ -136,52 +167,51 @@ def run_algorithm(not_trained):
             if green_time < 10:
                 green_time += 1
             elif not switched:
-                if green_time >= GREEN_TIME:
+                #Reinforcement learning
+
+                #Get state
+                q_w, q_n, q_e, q_s, p_t = sensorValues(traffic_analyzer.queue_lengths["west"], traffic_analyzer.queue_lengths["north"], traffic_analyzer.queue_lengths["east"], traffic_analyzer.queue_lengths["south"], green_time)
+                state = [q_w, q_n, q_e, q_s, p_t]
+
+                #Get reward
+                waiting_times = traffic_analyzer.getDelay()
+                r = waiting_times - previous_waiting_times
+                previous_waiting_times = waiting_times
+
+                #Update Q-Table with new knowledge
+                Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], previous_state[4], action] = Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], previous_state[4], action] + lr*(r + y*np.min(Q[state[0], state[1], state[2], state[3], state[4],:]) - Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], previous_state[4], action])
+
+                #Get action and execute it
+                explore = 0.1
+                if not_trained:
+                    explore += (4200 - step)/4200
+                if explore > 1:
+                    explore = 1
+                action = None
+                if random.uniform(0, 1) > explore:
+                    action = np.argmin(Q[state[0], state[1], state[2], state[3], state[4],:])
+                else:
+                    action = random.randint(0, 1)
+                if action == 1 and not west_east:
                     switched = True
-                else:
-                    if green_time % 10 == 0:
-                        #Reinforcement learning
+                    GREEN_TIME = green_time + 10
+                elif action == 0 and west_east:
+                    switched = True
+                    GREEN_TIME = green_time + 10
+                previous_state = state
 
-                        #Get state
-                        d_ns, d_we, p_t, w_e = sensorValues(traffic_analyzer.delay["north_south"], traffic_analyzer.delay["west_east"], green_time, west_east)
-                        state = [d_ns, d_we, p_t, w_e]
-
-                        #Get reward
-                        waiting_times = traffic_analyzer.getSquaredWaitingTimes()
-                        if waiting_times < previous_waiting_times:
-                            waiting_times = previous_waiting_times
-                        r = waiting_times - previous_waiting_times
-                        previous_waiting_times = waiting_times
-
-                        #Update Q-Table with new knowledge
-                        Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action] = Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action] + lr*(r + y*np.min(Q[state[0], state[1], state[2], state[3],:]) - Q[previous_state[0], previous_state[1], previous_state[2], previous_state[3], action])
-
-                        #Get action and execute it
-                        explore = 0.1
-                        if not_trained:
-                            explore += (14400 - step)/14400
-                        if explore > 1:
-                            explore = 1
-                        action = None
-                        if random.uniform(0, 1) > explore:
-                            action = np.argmin(Q[state[0], state[1], state[2], state[3],:])
-                        else:
-                            action = random.randint(0, 1)
-                        if action == 1 and not west_east:
-                            switched = True
-                        elif action == 0 and west_east:
-                            switched = True
-                        previous_state = state
-
-                    green_time += 1
+                green_time += 1
             elif switched:
-                green_time = 0
-                switched = False
-                yellow = True
-                if west_east:
-                    traci.trafficlight.setRedYellowGreenState("intersection", WE_YELLOW_STATE)
+                if green_time < GREEN_TIME:
+                    green_time += 1
                 else:
-                    traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
+                    green_time = 0
+                    switched = False
+                    yellow = True
+                    if west_east:
+                        traci.trafficlight.setRedYellowGreenState("intersection", WE_YELLOW_STATE)
+                    else:
+                        traci.trafficlight.setRedYellowGreenState("intersection", NS_YELLOW_STATE)
 
 
     waiting_time = traffic_analyzer.getWaitingTimes() - waiting_time
@@ -203,6 +233,8 @@ def run(not_trained):
     #Connect to SUMO via TraCI
     traci.start([sumoBinary, "-c", "intersection.sumocfg", "--waiting-time-memory", "1000"])
 
+    if not_trained:
+        print("Training...")
     return run_algorithm(not_trained)
 
 if __name__ == '__main__':
