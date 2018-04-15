@@ -117,8 +117,8 @@ def run_algorithm(not_trained):
     except:
         pass
     # Set learning parameters
-    lr = .0001
-    y = .01
+    lr = .8
+    y = .95
     #
 
     switched = False
