@@ -117,8 +117,8 @@ def run_algorithm(not_trained):
     except:
         pass
     # Set learning parameters
-    lr = .8
-    y = .95
+    lr = .0001
+    y = .01
     #
 
     switched = False
@@ -184,7 +184,7 @@ def run_algorithm(not_trained):
                 #Get action and execute it
                 explore = 0.1
                 if not_trained:
-                    explore += (4200 - step)/4200
+                    explore += (7800 - step)/7800
                 if explore > 1:
                     explore = 1
                 action = None

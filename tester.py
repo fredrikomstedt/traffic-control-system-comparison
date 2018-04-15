@@ -6,7 +6,7 @@ import argparse
 
 LEARNING_RUNS = 5
 
-def run_tests(d, t, g, tr):
+def run_tests(d, t, g, tr, v):
     demand = (d+1)*1./20
     wait = 0
     wait_squared = 0
@@ -14,7 +14,7 @@ def run_tests(d, t, g, tr):
     #Generate vehicles
     if g:
         print("Generating file...")
-        generate_routefile(demand)
+        generate_routefile(demand, v)
 
     if t == 0:
         #Trivial with GREEN_TIME 20
@@ -46,6 +46,7 @@ if __name__ == '__main__':
     parser.add_argument('type', help='The type of algorithm to be used, either 0, 1, 2, 3 or 4.')
     parser.add_argument('--generate_file', help="If used, new routefile will be generated.", action='store_true')
     parser.add_argument('--train_learner', help="If used, learner will use exploration much more.", action='store_true')
+    parser.add_argument('--variable_demand', help="If used, the cars will come at a variable rate instead of uniform.", action='store_true')
 
     #Extract parsed arguments
     args = parser.parse_args()
@@ -53,5 +54,6 @@ if __name__ == '__main__':
     t = int(args.type)
     g = args.generate_file
     tr = args.train_learner
+    v = args.variable_demand
 
-    run_tests(d, t, g, tr)
+    run_tests(d, t, g, tr, v)
