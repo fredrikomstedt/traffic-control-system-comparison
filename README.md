@@ -6,7 +6,7 @@ If this work was useful to you, please consider citing it using the following Bi
 ```
 @misc{bjorck2018comparison,
   title={A comparison of algorithms used in traffic control systems},
-  author={Bj{\"o}rck, Erik and Omstedt, Fredrik},
+  author={Björck, Erik and Omstedt, Fredrik},
   year={2018}
 }
 ```
