@@ -14,6 +14,8 @@ There are several ways of testing the algorithms. Each `*_traffic_light.py` file
 
 To generate a new traffic demand to test on, run `generate_routefile.py` or use the `--generate_file` command with `tester.py`.
 
+To visualize the algorithms with **SUMO**'s GUI, replace the `sumoBinary` variable in each `*_traffic_light.py` file's `run` function with `sumoBinary = checkBinary('sumo-gui')`.
+
 ## Authors
 
 If this work was useful to you, please consider citing it using the following BibTeX entry:
