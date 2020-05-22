@@ -12,7 +12,7 @@ The algorithms are defined in the `*_traffic_light.py` files. Each algorithm wor
 
 There are several ways of testing the algorithms. Each `*_traffic_light.py` file can be run independently, and this will produce output to `stdout`. It is also possible to run the algorithms through `tester.py`, which provides command line options to choose the traffic demand and algorithm to use. This approach appends the output to the file `results.txt`. As such, the results file contains results from several tests. To speed up the process of running many tests, scripts such as `uniform_tester.sh` can therefore be used. 
 
-To generate a new traffic demand to test on, run `generate_routefile.py`.
+To generate a new traffic demand to test on, run `generate_routefile.py` or use the `--generate_file` command with `tester.py`.
 
 ## Authors
 
